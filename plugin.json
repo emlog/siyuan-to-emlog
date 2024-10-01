@@ -1,46 +1,36 @@
 {
-  "name": "EMLOG同步",
+  "name": "siyuan-to-emlog",
   "author": "emlog",
   "url": "https://github.com/emlog/siyuan-to-emlog",
-  "version": "0.1",
-  "minAppVersion": "3.1.7",
+  "version": "0.1.0",
+  "minAppVersion": "2.11.1",
   "backends": [
-    "windows",
-    "linux",
-    "darwin",
-    "ios",
-    "android",
-    "docker"
+    "all"
   ],
   "frontends": [
-    "desktop",
-    "mobile",
-    "browser-desktop",
-    "browser-mobile",
-    "desktop-window"
+    "all"
   ],
   "displayName": {
     "default": "emlog sync",
     "zh_CN": "EMLOG同步"
   },
   "description": {
-    "default": "Synchronize docs to the EMLOG site",
-    "zh_CN": "将文件同步到EMLOG站点"
+    "default": "emlog sync",
+    "zh_CN": "EMLOG同步"
   },
   "readme": {
     "default": "README.md",
-    "zh_CN": "README_zh_CN.md"
+    "zh_CN": "README.md"
   },
   "funding": {
     "openCollective": "",
     "patreon": "",
     "github": "",
     "custom": [
-      ""
+      "https://afdian.net/a/firework"
     ]
   },
   "keywords": [
-    "emlog",
-    "emlog"
+    "emlog","同步","sync"
   ]
 }

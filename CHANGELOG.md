@@ -1,5 +1,6 @@
 # Changelog
 
-## v0.1.0 2024-9-30
+## 0.1.0
 
-* init siyuan to emlog
+- Initial release
+
