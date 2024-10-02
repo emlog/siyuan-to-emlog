@@ -75,7 +75,7 @@ export default class EmlogSync extends Plugin {
     let apiDomainElement = document.createElement("input");
 
     this.setting = new Setting({
-      width: '500px',
+      width: '600px',
       height: '300px',
       confirmCallback: async () => {
         let d = this.data[STORAGE_NAME];
@@ -87,7 +87,7 @@ export default class EmlogSync extends Plugin {
 
     this.setting.addItem({
       title: "API密钥",
-      description: "请输入API密钥",
+      description: "前往emlog后台系统->设置->API 查看密钥，并开启API",
       createActionElement: () => {
         apiKeyElement.className = "b3-text-field fn__block";
         apiKeyElement.placeholder = "API密钥";
@@ -98,7 +98,7 @@ export default class EmlogSync extends Plugin {
 
     this.setting.addItem({
       title: "API域名",
-      description: "请输入API域名（带http/https）",
+      description: "请输入API域名（如：https://emlog.net,结尾不带斜杠）",
       createActionElement: () => {
         apiDomainElement.className = "b3-text-field fn__block";
         apiDomainElement.placeholder = "API域名";
