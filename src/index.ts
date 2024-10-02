@@ -33,7 +33,7 @@ export default class EmlogSync extends Plugin {
       let pageId = await this.getActivePage();
 
       if (!pageId) {
-        await this.pushErrMsg("没有找到当前页");
+        await this.pushErrMsg("请先打开要同步的文档");
         return;
       }
 
