@@ -39,9 +39,9 @@ export default class EmlogSync extends Plugin {
       let docTitle = await this.getDocTitle(pageId);
 
       const formData = new FormData();
-      formData.append('apiKey', this.data[STORAGE_NAME].apiKey);
+      formData.append('api_key', this.data[STORAGE_NAME].apiKey);
       formData.append('title', docTitle);
-      formData.append('content', '');
+      formData.append('content', 'content:');
 
       const response = await fetch(this.data[STORAGE_NAME].apiDomain + "/?rest-api=article_post", {
         method: 'POST',
@@ -167,6 +167,7 @@ export default class EmlogSync extends Plugin {
         headers: headers
       });
       const result = await response.json();
+      console.log(result.data);
       docTitle = result.data.name;
     } catch (error) {
       console.error("获取文档标题时出错：", error);
