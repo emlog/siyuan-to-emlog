@@ -13,6 +13,7 @@ const flomoSvg = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xm
 export default class EmlogSync extends Plugin {
 
   private topBarElement: any;
+  private syncing: boolean = false;
   settingUtils: SettingUtils;
 
   async pushMsg(msg) {
@@ -37,11 +38,12 @@ export default class EmlogSync extends Plugin {
       }
 
       let docTitle = await this.getDocTitle(pageId);
+      let docContent = await this.getDocContent(pageId);
 
       const formData = new FormData();
       formData.append('api_key', this.data[STORAGE_NAME].apiKey);
       formData.append('title', docTitle);
-      formData.append('content', 'content:');
+      formData.append('content', docContent);
 
       const response = await fetch(this.data[STORAGE_NAME].apiDomain + "/?rest-api=article_post", {
         method: 'POST',
@@ -174,6 +176,38 @@ export default class EmlogSync extends Plugin {
     }
 
     return docTitle;
+  }
+
+  /**
+   * 获取文档内容
+   */
+  async getDocContent(id: string): Promise<string> {
+    const url = "api/export/exportMdContent";
+    const data = JSON.stringify({ id });
+
+    let result = "";
+
+    const headers: HeadersInit = {
+      'Content-Type': 'application/json',
+    };
+    const accessCode = this.settingUtils.get("access_code");
+    if (accessCode) {
+      headers['Authorization'] = 'Token ' + accessCode;
+    }
+
+    try {
+      const response = await fetch(url, {
+        method: 'POST',
+        body: data,
+        headers: headers
+      });
+      const res = await response.json();
+      result = res.data.content;
+    } catch (error) {
+      console.error("获取文档内容时出错：", error);
+    }
+
+    return result;
   }
 
   async onunload() {

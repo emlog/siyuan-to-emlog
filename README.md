@@ -4,6 +4,10 @@
 
     将思源笔记同步到emlog
 
+    ## 关于EMLOG
+
+    EMLOG 是一款轻量开源建站系统。
+
     ## 开发参考
 
     - https://github.com/siyuan-note/petal
