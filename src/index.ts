@@ -47,24 +47,13 @@ export default class FlomoSync extends Plugin {
     }
   }
 
-  /**
-   * 获取当前笔记内容
-   */
-  async getCurrentNoteContent() {
-    // 从思源获取当前笔记内容的API调用
-    const currentDoc = await this.kernelApi("/api/filetree/getDoc", {
-      id: this.workspace.currentDoc.id
-    });
-    return currentDoc.data.content;
-  }
-
   async onload() {
     // 初始化配置数据
     this.data[STORAGE_NAME] = await this.loadData(STORAGE_NAME) || {};
 
     this.topBarElement = this.addTopBar({
       icon: flomoSvg,
-      title: "同步当前笔记",
+      title: "同步当前笔记到EMLOG",
       position: "right",
       callback: await this.syncCurrentNote.bind(this),
     });
@@ -104,6 +93,63 @@ export default class FlomoSync extends Plugin {
         return apiDomainElement;
       },
     });
+  }
+
+  async getActivePage(): Promise<string> {
+    // 获取当前页的ID
+    const url = "api/system/getConf";
+    const data = "{}";
+    let activePageId = "";
+
+    // 设置headers
+    const headers = {
+      'Content-Type': 'application/json',
+    };
+    const accessCode = this.settingUtils.get("access_code");
+    if (accessCode) {
+      headers['Authorization'] = 'Token ' + accessCode;
+    }
+
+    try {
+      const response = await axios_plus.post(url, data, { headers });
+      const layout = response.data.data.conf.uiLayout.layout.children[0].children[1].children[0];
+      const activeChild = layout.children.find((child: any) => child.active);
+
+      if (activeChild) {
+        activePageId = activeChild.children.blockId;
+      }
+    } catch (error) {
+      console.error("获取当前页ID时出错：", error);
+    }
+
+    return activePageId;
+  }
+
+  /**
+   * 获取当前笔记的标题
+   */
+  async getDocTitle(id: string): Promise<string> {
+    const url = "api/block/getDocInfo";
+    const data = { id };
+    let docTitle = "";
+
+    // 设置headers
+    const headers = {
+      'Content-Type': 'application/json',
+    };
+    const accessCode = this.settingUtils.get("access_code");
+    if (accessCode) {
+      headers['Authorization'] = 'Token ' + accessCode;
+    }
+
+    try {
+      const response = await axios_plus.post(url, data, { headers });
+      docTitle = response.data.data.name;
+    } catch (error) {
+      console.error("获取文档标题时出错：", error);
+    }
+
+    return docTitle;
   }
 
   async onunload() {

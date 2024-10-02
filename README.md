@@ -10,3 +10,4 @@
     - https://github.com/siyuan-note/plugin-sample/blob/main/README_zh_CN.md
     - https://github.com/siyuan-note/siyuan/blob/master/API_zh_CN.md
     - https://github.com/siyuan-note/bazaar/blob/main/plugins.json
+    - https://github.com/winter60/plugin-flomo-sync/
