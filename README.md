@@ -11,3 +11,4 @@
     - https://github.com/siyuan-note/siyuan/blob/master/API_zh_CN.md
     - https://github.com/siyuan-note/bazaar/blob/main/plugins.json
     - https://github.com/winter60/plugin-flomo-sync/
+    - https://github.com/tengfei-xy/siyuan-plugin-share-system/blob/main/src/index.ts   

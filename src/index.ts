@@ -5,10 +5,16 @@ import {
 } from "siyuan";
 import "@/index.scss";
 
+import { SettingUtils } from "./libs/setting-utils";
+
 const STORAGE_NAME = "sync-config";
 const flomoSvg = '<svg t="1701609878223" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="4530" width="200" height="200"><path d="M0 0h1024v1024H0z" fill="#FAFAFA" p-id="4531"></path><path d="M709.461 507.212H332.07V399.559h447.497l-65.422 105.264c0 2.389-2.342 2.389-4.684 2.389z m98.143-167.462H450.067l65.441-105.273c2.342 0 4.675-2.39 7.016-2.39h355.177l-65.422 105.264c0 2.399-2.342 2.399-4.684 2.399z" fill="#30CF79" p-id="4532"></path><path d="M337.91 791.912c-105.159 0-191.62-88.519-191.62-196.181s86.461-196.172 191.62-196.172c105.15 0 191.621 88.51 191.621 196.172s-86.47 196.172-191.62 196.172z m0-282.31c-46.743 0-86.47 38.276-86.47 88.518 0 47.853 37.394 88.529 86.47 88.529 49.067 0 86.462-38.286 86.462-88.529-2.342-50.242-39.727-88.519-86.471-88.519z" fill="#30CF79" p-id="4533"></path></svg>';
 
-export default class FlomoSync extends Plugin {
+export default class EmlogSync extends Plugin {
+
+  private topBarElement: any;
+  settingUtils: SettingUtils;
+
   async pushMsg(msg) {
     fetchPost("/api/notification/pushMsg", { msg: msg });
   }
@@ -41,7 +47,6 @@ export default class FlomoSync extends Plugin {
         method: 'POST',
         body: formData
       });
-
       if (response.ok) {
         await this.pushMsg("同步成功！");
       } else {
@@ -62,6 +67,9 @@ export default class FlomoSync extends Plugin {
       position: "right",
       callback: await this.syncCurrentNote.bind(this),
     });
+
+    // 当onLayoutReady()执行时，this.settingUtils被载入
+    this.settingUtils = new SettingUtils(this, STORAGE_NAME);
 
     let apiKeyElement = document.createElement("input");
     let apiDomainElement = document.createElement("input");
@@ -104,10 +112,10 @@ export default class FlomoSync extends Plugin {
     // 获取当前页的ID
     const url = "api/system/getConf";
     const data = "{}";
+
     let activePageId = "";
 
-    // 设置headers
-    const headers = {
+    const headers: HeadersInit = {
       'Content-Type': 'application/json',
     };
     const accessCode = this.settingUtils.get("access_code");
@@ -116,8 +124,13 @@ export default class FlomoSync extends Plugin {
     }
 
     try {
-      const response = await axios_plus.post(url, data, { headers });
-      const layout = response.data.data.conf.uiLayout.layout.children[0].children[1].children[0];
+      const response = await fetch(url, {
+        method: 'POST',
+        body: data,
+        headers: headers
+      });
+      const result = await response.json();
+      const layout = result.data.conf.uiLayout.layout.children[0].children[1].children[0];
       const activeChild = layout.children.find((child: any) => child.active);
 
       if (activeChild) {
@@ -135,11 +148,11 @@ export default class FlomoSync extends Plugin {
    */
   async getDocTitle(id: string): Promise<string> {
     const url = "api/block/getDocInfo";
-    const data = { id };
+    const data = JSON.stringify({ id });
+
     let docTitle = "";
 
-    // 设置headers
-    const headers = {
+    const headers: HeadersInit = {
       'Content-Type': 'application/json',
     };
     const accessCode = this.settingUtils.get("access_code");
@@ -148,8 +161,13 @@ export default class FlomoSync extends Plugin {
     }
 
     try {
-      const response = await axios_plus.post(url, data, { headers });
-      docTitle = response.data.data.name;
+      const response = await fetch(url, {
+        method: 'POST',
+        body: data,
+        headers: headers
+      });
+      const result = await response.json();
+      docTitle = result.data.name;
     } catch (error) {
       console.error("获取文档标题时出错：", error);
     }
