@@ -8,7 +8,7 @@ import "@/index.scss";
 import { SettingUtils } from "./libs/setting-utils";
 
 const STORAGE_NAME = "sync-config";
-const flomoSvg = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><rect width="24" height="24" fill="#1E1E1E"/><rect width="24" height="24" fill="#4E73DF"/><rect x="4" y="6" width="16" height="12" fill="url(#pattern0_0_1)"/><defs><pattern id="pattern0_0_1" patternContentUnits="objectBoundingBox" width="1" height="1"><use xlink:href="#image0_0_1" transform="matrix(0.00833333 0 0 0.0111111 0.125 0)"/></pattern><image id="image0_0_1" width="90" height="90" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFoAAABaCAYAAAA4qEECAAAACXBIWXMAAAsTAAALEwEAmpwYAAABtklEQVR4nO3cPUoDURhG4Yv4g8ZCEERJpRuwVDt34kLche5EEd2DNmIXSy2iGxBBOCIklQhGh3vn+3IOpM6dh5cwkElKMTMzs1gBS8Cg9TnSBqwAZ8A78AFcAtutz5UqYBm44HsjYNj6fNmRp4ldAXma2BWQp4ldAVnsisjTXHYFZLErIotdEVnsishiV0QWm3rI84tNfeT5w6Yd8vxg0x45Pzb9Qc6LTf+Q82H3GDkPdgDk+NiBkONiB0SOiT35tjpqt8BCCfLcxRuxOyh9D1ibPHcRueMSIeCGuD0BqyVCwBZwTbzugf0SLWAd2JvxNe4I7WjG990s8xTw3BF0nNu0FiG00KnCRQudKly00KnCRQudKly00KnCRQudKly00KnCRQudKly00KnCRQudKly00KnCRQudKly00KnCRQudKly00KnCRQudKly00KnCRQudKly00KnCRVeDHnX0W/CNSkeOGXDVAfK49XX0PuCkA+jz1tfR+4BF4O4fyK/ATuvrCBEwBB7+iHzY+vyhAgbAKfD4C+CXr48Ll9zNP4/t/vAXPd5dmJmZlQB9AmTA+Cmpj1a/AAAAAElFTkSuQmCC"/></defs></svg>';
+const emlogSvg = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><rect width="24" height="24" fill="#1E1E1E"/><rect width="24" height="24" fill="#4E73DF"/><rect x="4" y="6" width="16" height="12" fill="url(#pattern0_0_1)"/><defs><pattern id="pattern0_0_1" patternContentUnits="objectBoundingBox" width="1" height="1"><use xlink:href="#image0_0_1" transform="matrix(0.00833333 0 0 0.0111111 0.125 0)"/></pattern><image id="image0_0_1" width="90" height="90" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFoAAABaCAYAAAA4qEECAAAACXBIWXMAAAsTAAALEwEAmpwYAAABtklEQVR4nO3cPUoDURhG4Yv4g8ZCEERJpRuwVDt34kLche5EEd2DNmIXSy2iGxBBOCIklQhGh3vn+3IOpM6dh5cwkElKMTMzs1gBS8Cg9TnSBqwAZ8A78AFcAtutz5UqYBm44HsjYNj6fNmRp4ldAXma2BWQp4ldAVnsisjTXHYFZLErIotdEVnsishiV0QWm3rI84tNfeT5w6Yd8vxg0x45Pzb9Qc6LTf+Q82H3GDkPdgDk+NiBkONiB0SOiT35tjpqt8BCCfLcxRuxOyh9D1ibPHcRueMSIeCGuD0BqyVCwBZwTbzugf0SLWAd2JvxNe4I7WjG990s8xTw3BF0nNu0FiG00KnCRQudKly00KnCRQudKly00KnCRQudKly00KnCRQudKly00KnCRQudKly00KnCRQudKly00KnCRQudKly00KnCRQudKly00KnCRQudKly00KnCRVeDHnX0W/CNSkeOGXDVAfK49XX0PuCkA+jz1tfR+4BF4O4fyK/ATuvrCBEwBB7+iHzY+vyhAgbAKfD4C+CXr48Ll9zNP4/t/vAXPd5dmJmZlQB9AmTA+Cmpj1a/AAAAAElFTkSuQmCC"/></defs></svg>';
 
 export default class EmlogSync extends Plugin {
 
@@ -64,7 +64,7 @@ export default class EmlogSync extends Plugin {
     this.data[STORAGE_NAME] = await this.loadData(STORAGE_NAME) || {};
 
     this.topBarElement = this.addTopBar({
-      icon: flomoSvg,
+      icon: emlogSvg,
       title: "同步当前笔记到EMLOG",
       position: "right",
       callback: await this.syncCurrentNote.bind(this),
