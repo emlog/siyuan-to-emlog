@@ -15,8 +15,8 @@
     "zh_CN": "EMLOG同步"
   },
   "description": {
-    "default": "emlog sync",
-    "zh_CN": "EMLOG同步"
+    "default": "Synchronize documents to emlog site",
+    "zh_CN": "同步文档到emlog站点"
   },
   "readme": {
     "default": "README.md",
@@ -26,9 +26,7 @@
     "openCollective": "",
     "patreon": "",
     "github": "",
-    "custom": [
-      "https://afdian.net/a/firework"
-    ]
+    "custom": []
   },
   "keywords": [
     "emlog","同步","sync"
