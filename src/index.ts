@@ -25,7 +25,7 @@ export default class EmlogSync extends Plugin {
   }
 
   /**
-   * 获取当前笔记的内容并同步到API
+   * 获取当前文档的内容并同步到API
    */
   async syncCurrentNote() {
     try {
@@ -65,7 +65,7 @@ export default class EmlogSync extends Plugin {
 
     this.topBarElement = this.addTopBar({
       icon: emlogSvg,
-      title: "同步当前笔记到EMLOG",
+      title: "同步当前文档到EMLOG",
       position: "right",
       callback: await this.syncCurrentNote.bind(this),
     });
@@ -146,7 +146,7 @@ export default class EmlogSync extends Plugin {
   }
 
   /**
-   * 获取当前笔记的标题
+   * 获取当前文档的标题
    */
   async getDocTitle(id: string): Promise<string> {
     const url = "api/block/getDocInfo";
