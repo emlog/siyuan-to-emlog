@@ -22,19 +22,24 @@ export default class FlomoSync extends Plugin {
    */
   async syncCurrentNote() {
     try {
-      const noteContent = await this.getCurrentNoteContent();  // 获取当前笔记内容
-      const apiData = {
-        apiKey: this.data[STORAGE_NAME].apiKey,
-        noteContent: noteContent
-      };
 
-      const response = await fetch(this.data[STORAGE_NAME].apiDomain + "/api/sync", {
+      let pageId = await this.getActivePage();
+
+      if (!pageId) {
+        await this.pushErrMsg("没有找到当前页");
+        return;
+      }
+
+      let docTitle = await this.getDocTitle(pageId);
+
+      const formData = new FormData();
+      formData.append('apiKey', this.data[STORAGE_NAME].apiKey);
+      formData.append('title', docTitle);
+      formData.append('content', '');
+
+      const response = await fetch(this.data[STORAGE_NAME].apiDomain + "/?rest-api=article_post", {
         method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${this.data[STORAGE_NAME].apiKey}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(apiData)
+        body: formData
       });
 
       if (response.ok) {
