@@ -30,6 +30,8 @@ export default class EmlogSync extends Plugin {
   async syncCurrentNote() {
     try {
 
+      let apiKey = this.data[STORAGE_NAME].apiKey;
+      let apiDomain = this.data[STORAGE_NAME].apiDomain;
       let pageId = await this.getActivePage();
 
       if (!pageId) {
@@ -37,19 +39,43 @@ export default class EmlogSync extends Plugin {
         return;
       }
 
+      if (!apiKey || !apiDomain) {
+        await this.pushErrMsg("EMLOG同步：请先在插件设置中配置API信息");
+        return;
+      }
+
       let docTitle = await this.getDocTitle(pageId);
       let docContent = await this.getDocContent(pageId);
 
+      // 检查是否已经有该文档的文章ID
+      let articleId = this.data[STORAGE_NAME].articleMap?.[pageId];
+
       const formData = new FormData();
-      formData.append('api_key', this.data[STORAGE_NAME].apiKey);
+      formData.append('api_key', apiKey);
       formData.append('title', docTitle);
       formData.append('content', docContent);
 
-      const response = await fetch(this.data[STORAGE_NAME].apiDomain + "/?rest-api=article_post", {
+      let url = apiDomain + "/?rest-api=article_post";
+      if (articleId) {
+        // 如果存在对应的article_id，则调用更新接口
+        url = apiDomain + '/?rest-api=article_update';
+        formData.append('id', articleId);
+      }
+
+      const response = await fetch(url, {
         method: 'POST',
         body: formData
       });
       if (response.ok) {
+        const result = await response.json();
+        if (!articleId) {
+          // 如果是新建文章，保存文档ID和article_id的对应关系
+          this.data[STORAGE_NAME].articleMap = {
+            ...(this.data[STORAGE_NAME].articleMap || {}),
+            [pageId]: result.data.article_id
+          };
+          await this.saveData(STORAGE_NAME, this.data[STORAGE_NAME]);
+        }
         await this.pushMsg("同步成功！");
       } else {
         throw new Error(`HTTP error! status: ${response.status}`);
@@ -212,5 +238,7 @@ export default class EmlogSync extends Plugin {
 
   async onunload() {
     this.syncing = false;
+    // 初始化配置数据，增加文章ID映射
+    this.data[STORAGE_NAME] = await this.loadData(STORAGE_NAME) || { articleMap: {} };
   }
 }
