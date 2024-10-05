@@ -8,7 +8,7 @@ import fg from 'fast-glob';
 
 const args = minimist(process.argv.slice(2))
 const isWatch = args.watch || args.w || false
-const devDistDir = "/Users/xudawei/SiYuan/data/plugins"
+const devDistDir = "/Users/xudawei/SiYuan/data/plugins/siyuan-to-emlog"
 const distDir = isWatch ? devDistDir : "./dist"
 
 console.log("isWatch=>", isWatch)
