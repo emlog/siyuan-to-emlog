@@ -12,6 +12,7 @@
 ## 发布流程
 
 * 修改：package.json 版本号
+* 修改：plugin.json 版本号
 * 修改： changelog.md
 * 打标签：git tag v0.1.3
 * 推送标签：git push origin v0.1.3

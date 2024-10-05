@@ -2,7 +2,7 @@
   "name": "siyuan-to-emlog",
   "author": "emlog",
   "url": "https://github.com/emlog/siyuan-to-emlog",
-  "version": "0.1.0",
+  "version": "0.1.3",
   "minAppVersion": "2.11.1",
   "backends": [
     "all"
