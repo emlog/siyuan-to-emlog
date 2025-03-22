@@ -17,7 +17,7 @@
 * 打标签：git tag v0.1.x
 * 推送标签：git push origin v0.1.x
 * 打包：pnpm run build
-* 发布：github 上创建新的release
+* 发布：github 上创建新的 release
 
 
 ## 开发参考
