@@ -25,6 +25,77 @@ export default class EmlogSync extends Plugin {
   }
 
   /**
+   * 封装API请求方法
+   * @param endpoint API端点
+   * @param method 请求方法
+   * @param formData 表单数据
+   * @returns 响应结果
+   */
+  async apiRequest(endpoint: string, method: string = 'POST', formData: FormData): Promise<any> {
+    try {
+      const apiDomain = this.data[STORAGE_NAME].apiDomain;
+      
+      if (method.toUpperCase() === 'GET') {
+        // For GET requests, append form data to URL as query parameters
+        const params = new URLSearchParams();
+        formData.forEach((value, key) => {
+          params.append(key, value.toString());
+        });
+        const url = `${apiDomain}/?rest-api=${endpoint}&${params.toString()}`;
+        
+        const response = await fetch(url, {
+          method: 'GET'
+        });
+        
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        return await response.json();
+      } else {
+        // For other methods (POST, PUT, etc.), use body
+        const url = `${apiDomain}/?rest-api=${endpoint}`;
+        
+        const response = await fetch(url, {
+          method: method,
+          body: formData
+        });
+        
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        return await response.json();
+      }
+    } catch (error) {
+      console.error(`API请求错误 (${endpoint}):`, error);
+      throw error;
+    }
+  }
+
+  /**
+   * 检查文章是否存在
+   * @param articleId 文章ID
+   * @param apiKey API密钥
+   * @returns 文章是否存在
+   */
+  async checkArticleExists(articleId: string, apiKey: string): Promise<boolean> {
+    try {
+      const formData = new FormData();
+      formData.append('api_key', apiKey);
+      formData.append('id', articleId);
+      
+      const result = await this.apiRequest('article_detail', 'GET', formData);
+      
+      // 如果返回的data为空字符串，说明文章不存在
+      return result.data !== "";
+    } catch (error) {
+      console.error("检查文章是否存在时出错:", error);
+      return false;
+    }
+  }
+
+  /**
    * 获取当前文档的内容并同步到API
    */
   async syncCurrentNote() {
@@ -49,37 +120,43 @@ export default class EmlogSync extends Plugin {
 
       // 检查是否已经有该文档的文章ID
       let articleId = this.data[STORAGE_NAME].articleMap?.[pageId];
+      let articleExists = false;
+      
+      // 如果有文章ID，检查文章是否存在
+      if (articleId) {
+        articleExists = await this.checkArticleExists(articleId, apiKey);
+        if (!articleExists) {
+          // 文章不存在，清除映射关系
+          delete this.data[STORAGE_NAME].articleMap[pageId];
+          await this.saveData(STORAGE_NAME, this.data[STORAGE_NAME]);
+          articleId = null;
+        }
+      }
 
       const formData = new FormData();
       formData.append('api_key', apiKey);
       formData.append('title', docTitle);
       formData.append('content', docContent);
 
-      let url = apiDomain + "/?rest-api=article_post";
-      if (articleId) {
-        // 如果存在对应的article_id，则调用更新接口
-        url = apiDomain + '/?rest-api=article_update';
+      let endpoint = 'article_post';
+      if (articleId && articleExists) {
+        // 如果存在对应的article_id且文章存在，则调用更新接口
+        endpoint = 'article_update';
         formData.append('id', articleId);
       }
 
-      const response = await fetch(url, {
-        method: 'POST',
-        body: formData
-      });
-      if (response.ok) {
-        const result = await response.json();
-        if (!articleId) {
-          // 如果是新建文章，保存文档ID和article_id的对应关系
-          this.data[STORAGE_NAME].articleMap = {
-            ...(this.data[STORAGE_NAME].articleMap || {}),
-            [pageId]: result.data.article_id
-          };
-          await this.saveData(STORAGE_NAME, this.data[STORAGE_NAME]);
-        }
-        await this.pushMsg("同步成功！");
-      } else {
-        throw new Error(`HTTP error! status: ${response.status}`);
+      const result = await this.apiRequest(endpoint, 'POST', formData);
+      
+      if (!articleId || !articleExists) {
+        // 如果是新建文章，保存文档ID和article_id的对应关系
+        this.data[STORAGE_NAME].articleMap = {
+          ...(this.data[STORAGE_NAME].articleMap || {}),
+          [pageId]: result.data.article_id
+        };
+        await this.saveData(STORAGE_NAME, this.data[STORAGE_NAME]);
       }
+      
+      await this.pushMsg("同步成功！");
     } catch (error) {
       await this.pushErrMsg("同步失败：" + error);
     }

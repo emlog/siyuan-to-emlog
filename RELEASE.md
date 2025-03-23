@@ -8,6 +8,11 @@
 
 * [siyuan-to-emlog](https://github.com/emlog/siyuan-to-emlog)
 
+## 开发流程
+
+- pnpm run dev #运行后将打包好的插件放在思源笔记插件目录下
+- 打开思源，点击右上角的插件按钮，选择插件，点击启用
+- 开始调试。
 
 ## 发布流程
 
