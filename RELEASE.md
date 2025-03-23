@@ -22,14 +22,11 @@
 * 打标签：git tag v0.1.x
 * 推送标签：git push origin v0.1.x
 * 打包：pnpm run build
-* 发布：github 上创建新的 release
+* 发布：github 上创建新的 release, 并上传打包好的插件文件 根目录下的 package.zip
 
 
 ## 开发参考
 
-* https://github.com/siyuan-note/petal
-* https://github.com/siyuan-note/plugin-sample/blob/main/README_zh_CN.md
-* https://github.com/siyuan-note/siyuan/blob/master/API_zh_CN.md
-* [https://github.com/siyuan-note/bazaar](https://github.com/siyuan-note/bazaar)
-* https://github.com/winter60/plugin-flomo-sync/
-* https://github.com/tengfei-xy/siyuan-plugin-share-system/blob/main/src/index.ts
+* [SiYuan Plugin API](https://github.com/siyuan-note/petal)
+* [思源笔记插件示例](https://github.com/siyuan-note/plugin-sample/blob/main/README_zh_CN.md)
+* [API中文版](https://github.com/siyuan-note/siyuan/blob/master/API_zh_CN.md)
